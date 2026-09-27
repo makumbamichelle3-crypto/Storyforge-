@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>StoryForge V12 — 1.0</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#f5e9ff,#fff1f8);color:#30243d}
+header{background:linear-gradient(135deg,#5f2998,#c152d7);color:#fff;padding:22px 17px;position:sticky;top:0;z-index:10;box-shadow:0 5px 18px #0002}
+header h1{margin:0;font-size:26px}header p{margin:5px 0 0;opacity:.92}
+nav{display:flex;gap:7px;overflow-x:auto;padding:10px;background:#fff;position:sticky;top:91px;z-index:9;box-shadow:0 2px 10px #0001}
+nav button{border:0;background:#f0e3fa;color:#63308e;border-radius:18px;padding:9px 13px;white-space:nowrap;font-weight:bold}nav button.active{background:#793bb0;color:#fff}
+main{max-width:1100px;margin:auto;padding:17px}.tab{display:none}.tab.active{display:block}.card{background:#fff;border-radius:20px;padding:17px;margin-bottom:15px;box-shadow:0 5px 20px #5b2b7d17}
+h2{margin-top:0;color:#69329a}h3{color:#743aa1}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:13px}
+input,select,textarea{width:100%;padding:11px;border:1px solid #decbe9;border-radius:12px;margin:5px 0 10px;font:inherit}textarea{min-height:80px;resize:vertical}
+button{font:inherit}.primary,.secondary,.danger{border:0;border-radius:12px;padding:10px 14px;font-weight:bold;cursor:pointer;margin:3px}.primary{background:#793bb0;color:white}.secondary{background:#f0e2f8;color:#66338d}.danger{background:#ffe1eb;color:#a22d5c}
+.hero{background:linear-gradient(135deg,#ead4fa,#ffdfef);padding:25px;border-radius:23px}.small{font-size:13px;color:#765f82}.badge{display:inline-block;padding:5px 9px;border-radius:12px;background:#f0e1fa;color:#69329a;font-size:12px;margin:3px}.stat{font-size:28px;font-weight:bold;color:#7037a1}
+.preview{min-height:340px;border-radius:20px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bg-classroom{background:linear-gradient(#c8eaff 60%,#d3a16a 60%)}.bg-bedroom{background:linear-gradient(#d9c8f5 60%,#b9876a 60%)}.bg-library{background:linear-gradient(#ead5b9,#986842)}.bg-garden{background:linear-gradient(#afe8ff 55%,#70c768 55%)}.bg-street{background:linear-gradient(#bde8ff 55%,#777 55%)}.bg-fantasy{background:linear-gradient(#211344,#8e5bd0)}
+.char{width:84px;height:158px;position:relative;z-index:3;transform-origin:center bottom}.head{width:66px;height:66px;border-radius:50%;position:absolute;left:9px;top:0;background:#75452f;border:3px solid #48291d}.body{width:65px;height:82px;border-radius:18px;position:absolute;left:9px;top:65px;background:#9551c5}.eye{position:absolute;top:26px;width:7px;height:7px;border-radius:50%;background:#24151d}.e1{left:19px}.e2{right:19px}.mouth{position:absolute;width:17px;height:7px;border-bottom:2px solid #321c1d;left:23px;top:43px;border-radius:50%}
+.talk .mouth{animation:mouth .2s infinite alternate}.wave{animation:wave .45s infinite alternate}.walk{animation:walk 1s infinite alternate}.run{animation:run .35s infinite alternate}.jump{animation:jump .55s infinite alternate}.blink .eye{height:2px}.excited{animation:bounce .45s infinite alternate}.shake{animation:shake .22s infinite alternate}.camera-zoom{animation:zoom 3s infinite alternate}.camera-pan{animation:pan 3s infinite alternate}.camera-shake{animation:camshake .15s infinite alternate}
+@keyframes mouth{to{height:1px;width:10px}}@keyframes wave{to{transform:rotate(-7deg) translateY(-4px)}}@keyframes walk{to{transform:translateX(75px)}}@keyframes run{to{transform:translateX(125px) rotate(3deg)}}@keyframes jump{to{transform:translateY(-55px)}}@keyframes bounce{to{transform:translateY(-20px)}}@keyframes shake{to{transform:translateX(9px)}}@keyframes zoom{to{transform:scale(1.1)}}@keyframes pan{to{transform:translateX(-18px)}}@keyframes camshake{to{transform:translate(4px,2px)}}
+.bubble{position:absolute;top:18px;right:15px;max-width:62%;background:#fff;padding:12px 15px;border-radius:18px;box-shadow:0 4px 12px #0002;z-index:6}.bubble:after{content:"";position:absolute;bottom:-8px;left:20px;border:8px solid transparent;border-top-color:#fff}
+.timeline{display:flex;gap:8px;overflow-x:auto;padding:10px 0}.frame{min-width:120px;background:#faf5ff;border:2px solid #e6d5ef;border-radius:14px;padding:10px;cursor:pointer}.frame.active{border-color:#813db0}
+.list{padding:12px;border:1px solid #eadcf1;border-radius:14px;margin:8px 0;background:#fffaff}.progress{height:10px;background:#eadff0;border-radius:10px;overflow:hidden}.progress span{display:block;height:100%;width:0;background:#843db4;transition:width .2s}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#3c2750;color:#fff;padding:12px 18px;border-radius:20px;display:none;z-index:30}
+</style>
+</head>
+<body>
+<header><h1>✨ StoryForge V12 — 1.0</h1><p>The polished first-release prototype for writers and story creators.</p></header>
+<nav id="nav"></nav>
+<main>
+<section id="home" class="tab active">
+<div class="hero"><h2>🚀 Welcome to StoryForge 1.0</h2><p>Write your stories, build characters, design scenes, storyboard them, animate performances and preview an episode — all in one workspace.</p><button class="primary" onclick="go('project')">Open Project</button></div>
+<div class="grid" style="margin-top:15px"><div class="card"><div class="small">Stories</div><div class="stat" id="stories">1</div></div><div class="card"><div class="small">Characters</div><div class="stat" id="characters">1</div></div><div class="card"><div class="small">Scenes</div><div class="stat" id="scenes">0</div></div><div class="card"><div class="small">Clips</div><div class="stat" id="clips">0</div></div></div>
+<div class="card"><h3>💜 First-release checklist</h3><p>✓ Story workspace &nbsp; ✓ Character builder &nbsp; ✓ Scene builder &nbsp; ✓ Storyboard &nbsp; ✓ Animation timeline &nbsp; ✓ Episode preview &nbsp; ✓ Backup/restore</p></div>
+</section>
+
+<section id="project" class="tab">
+<div class="card"><h2>📚 Project</h2><div class="grid"><div><label>Story title</label><input id="storyTitle" value="The Girl in the Notebook"></div><div><label>Genre</label><input id="genre" value="Mystery/Fantasy"></div></div><label>Description</label><textarea id="desc">A girl discovers a mysterious message inside her notebook.</textarea><button class="primary" onclick="saveProject()">💾 Save project</button></div>
+<div class="card"><h3>Characters</h3><div id="charList"></div></div>
+</section>
+
+<section id="character" class="tab">
+<div class="card"><h2>👤 Character Builder</h2><div class="grid"><div><label>Name</label><input id="charName" value="Sierra"></div><div><label>Style</label><select id="style"><option>2D Story</option><option>Anime</option><option>Cartoon</option><option>Chibi</option><option>Comic</option></select></div><div><label>Hair</label><select id="hair"><option>4C Curls</option><option>High Bun</option><option>Braids</option><option>Bob</option></select></div><div><label>Outfit</label><select id="outfit"><option>Purple T-shirt + Baggy Jeans</option><option>Black Hoodie + Jeans</option><option>Pink Sweater + Jeans</option><option>School Uniform</option></select></div></div><button class="primary" onclick="saveCharacter()">Save character</button></div>
+<div class="card"><h3>Character preview</h3><div class="preview bg-classroom"><div class="char excited"><div class="head"><i class="eye e1"></i><i class="eye e2"></i><i class="mouth"></i></div><div class="body"></div></div></div></div>
+</section>
+
+<section id="scene" class="tab">
+<div class="card"><h2>🏠 Scene Builder</h2><div class="grid"><div><label>Scene name</label><input id="sceneName" value="The Classroom"></div><div><label>Background</label><select id="sceneBg"><option value="classroom">Classroom</option><option value="bedroom">Bedroom</option><option value="library">Library</option><option value="garden">Garden</option><option value="street">Street</option><option value="fantasy">Fantasy Kingdom</option></select></div></div><button class="primary" onclick="saveScene()">Save scene</button></div>
+<div class="card"><div id="scenePreview" class="preview bg-classroom"><div class="char"><div class="head"><i class="eye e1"></i><i class="eye e2"></i><i class="mouth"></i></div><div class="body"></div></div></div></div>
+</section>
+
+<section id="storyboard" class="tab">
+<div class="card"><h2>🎞️ Storyboard</h2><div class="grid"><div><label>Shot title</label><input id="shotTitle" placeholder="The Notebook"></div><div><label>Action</label><select id="shotAction"><option>talk</option><option>blink</option><option>wave</option><option>walk</option><option>run</option><option>jump</option><option>excited</option><option>shake</option></select></div></div><label>Dialogue</label><textarea id="shotDialogue"></textarea><button class="primary" onclick="addShot()">＋ Add shot</button></div><div class="card"><div id="shotList"></div></div>
+</section>
+
+<section id="animation" class="tab">
+<div class="card"><h2>🎬 Animation Timeline</h2><div class="grid"><div><label>Action</label><select id="animAction"><option>talk</option><option>blink</option><option>wave</option><option>walk</option><option>run</option><option>jump</option><option>excited</option><option>shake</option></select></div><div><label>Duration</label><select id="animDuration"><option value="1">1 sec</option><option value="2">2 sec</option><option value="3">3 sec</option><option value="4">4 sec</option></select></div><div><label>Camera</label><select id="animCamera"><option value="">None</option><option value="camera-zoom">Zoom</option><option value="camera-pan">Pan</option><option value="camera-shake">Shake</option></select></div></div><label>Dialogue</label><textarea id="animDialogue"></textarea><button class="primary" onclick="addClip()">＋ Add clip</button><button class="secondary" onclick="playTimeline()">▶ Play timeline</button><div id="timeline" class="timeline"></div></div>
+<div class="card"><div id="animStage" class="preview bg-classroom"><div id="animChar" class="char"><div class="head"><i class="eye e1"></i><i class="eye e2"></i><i class="mouth"></i></div><div class="body"></div></div><div id="animBubble" class="bubble" style="display:none"></div></div><div class="progress" style="margin-top:12px"><span id="progressBar"></span></div></div>
+</section>
+
+<section id="episode" class="tab">
+<div class="card"><h2>🎥 Episode Maker</h2><div class="grid"><div><label>Episode title</label><input id="episodeTitle" value="The Girl in the Notebook"></div><div><label>Format</label><select id="episodeFormat"><option>Vertical 9:16</option><option>Landscape 16:9</option><option>Square 1:1</option></select></div></div><button class="primary" onclick="playEpisode()">▶ Preview episode</button><button class="secondary" onclick="exportPlayer()">⬇ Export Story Player</button><div id="episodeBox" style="display:none;margin-top:15px"></div></div>
+</section>
+
+<section id="settings" class="tab">
+<div class="card"><h2>⚙️ Settings & Backup</h2><button class="secondary" onclick="backup()">⬇ Backup project</button><button class="secondary" onclick="document.getElementById('restore').click()">⬆ Restore project</button><input id="restore" type="file" accept=".json" style="display:none" onchange="restoreProject(event)"><button class="danger" onclick="reset()">Reset project</button></div>
+<div class="card"><h3>StoryForge 1.0 status</h3><p>V12 is the polished browser prototype. It is designed to be simple enough for tap, drag and swipe workflows.</p><p class="small">Still not included: native MP4 rendering, true AI lip-sync, cloud accounts, app-store packaging and a full professional asset generator. Those are future product upgrades rather than promises of the prototype.</p></div>
+</section>
+</main><div id="toast"></div>
+<script>
+const navItems=[['home','🏠 Home'],['project','📚 Project'],['character','👤 Character'],['scene','🏠 Scene'],['storyboard','🎞️ Storyboard'],['animation','🎬 Animation'],['episode','🎥 Episode'],['settings','⚙️ Settings']];
+nav.innerHTML=navItems.map((x,i)=>`<button class="${i===0?'active':''}" onclick="go('${x[0]}')">${x[1]}</button>`).join('');
+let db=JSON.parse(localStorage.getItem('storyforge_v12')||'null')||{story:{title:'The Girl in the Notebook',genre:'Mystery/Fantasy',desc:'A girl discovers a mysterious message inside her notebook.'},characters:[{name:'Sierra',style:'2D Story',hair:'4C Curls',outfit:'Purple T-shirt + Baggy Jeans'}],scenes:[],shots:[],clips:[]};
+function save(){localStorage.setItem('storyforge_v12',JSON.stringify(db));update()}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function toast(t){let x=document.getElementById('toast');x.textContent=t;x.style.display='block';setTimeout(()=>x.style.display='none',1500)}
+function go(id){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('nav button').forEach((b,i)=>b.classList.toggle('active',navItems[i][0]===id));render()}
+function update(){stories.textContent=1;characters.textContent=db.characters.length;scenes.textContent=db.scenes.length;clips.textContent=db.clips.length;renderChars();renderShots();renderTimeline()}
+function render(){storyTitle.value=db.story.title;genre.value=db.story.genre;desc.value=db.story.desc;charName.value=db.characters[0]?.name||'Sierra';renderChars();renderShots();renderTimeline()}
+function renderChars(){charList.innerHTML=db.characters.map(c=>`<div class="list"><b>${esc(c.name)}</b><span class="badge">${esc(c.style)}</span><p class="small">${esc(c.hair)} • ${esc(c.outfit)}</p></div>`).join('')}
+function saveProject(){db.story={title:storyTitle.value,genre:genre.value,desc:desc.value};save();toast('Project saved 💜')}
+function saveCharacter(){db.characters=[{name:charName.value||'Sierra',style:style.value,hair:hair.value,outfit:outfit.value}];save();toast('Character saved')}
+function saveScene(){db.scenes.push({name:sceneName.value,bg:sceneBg.value});save();toast('Scene saved 🏠')}
+sceneBg.addEventListener('change',()=>scenePreview.className='preview bg-'+sceneBg.value)
+function addShot(){db.shots.push({title:shotTitle.value||'Untitled Shot',action:shotAction.value,dialogue:shotDialogue.value});save();shotTitle.value='';shotDialogue.value='';toast('Shot added')}
+function renderShots(){shotList.innerHTML=db.shots.map((s,i)=>`<div class="list"><b>${i+1}. ${esc(s.title)}</b><span class="badge">${esc(s.action)}</span><p>${esc(s.dialogue)}</p><button class="primary" onclick="sendShot(${i})">Animate this</button></div>`).join('')||'<p class="small">No shots yet.</p>'}
+function sendShot(i){let s=db.shots[i];animAction.value=s.action;animDialogue.value=s.dialogue;go('animation');toast('Shot loaded into Animation')}
+function addClip(){db.clips.push({action:animAction.value,duration:Number(animDuration.value),camera:animCamera.value,dialogue:animDialogue.value});save();toast('Clip added 🎬')}
+function renderTimeline(){timeline.innerHTML=db.clips.map((c,i)=>`<div class="frame"><b>${i+1}. ${esc(c.action)}</b><br><span class="small">${c.duration}s • ${c.camera||'static'}</span></div>`).join('')}
+function playTimeline(){if(!db.clips.length)return toast('Add a clip first');let i=0;function next(){if(i>=db.clips.length)return;let c=db.clips[i++];animStage.className='preview bg-classroom '+c.camera;animChar.className='char '+c.action;animBubble.textContent=c.dialogue||'';animBubble.style.display=c.dialogue?'block':'none';progressBar.style.width=((i/db.clips.length)*100)+'%';setTimeout(next,c.duration*1000)}progressBar.style.width='0%';next()}
+function playEpisode(){episodeBox.style.display='block';episodeBox.innerHTML='<div class="card"><h3>'+esc(episodeTitle.value)+'</h3><p class="small">Episode preview • '+db.clips.length+' animation clips • '+db.shots.length+' storyboard shots</p><div class="progress"><span id="ep"></span></div></div>';let n=Math.max(db.clips.length,1),i=0;function step(){if(i>=n)return;i++;ep.style.width=(i/n*100)+'%';setTimeout(step,1000)}step()}
+function exportPlayer(){let h='<!doctype html><html><head><meta charset="utf-8"><title>'+esc(episodeTitle.value)+'</title><style>body{font-family:Arial;background:#f5e9ff;padding:20px;color:#30243d}.card{background:#fff;border-radius:20px;padding:20px;max-width:760px;margin:auto}.item{background:#faf5ff;padding:14px;border-radius:14px;margin:10px 0}</style></head><body><div class="card"><h1>'+esc(episodeTitle.value)+'</h1>'+db.clips.map((c,i)=>'<div class="item"><b>Clip '+(i+1)+'</b><p>'+esc(c.action)+' • '+c.duration+' sec • '+esc(c.camera||'static')+'</p><p>“'+esc(c.dialogue||'')+'”</p></div>').join('')+'</div></body></html>';let b=new Blob([h],{type:'text/html'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='StoryForge_1.0_Story_Player.html';a.click();toast('Story Player exported')}
+function backup(){let b=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='StoryForge_1.0_Backup.json';a.click();toast('Backup downloaded')}
+function restoreProject(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{db=JSON.parse(r.result);save();render();toast('Project restored')}catch(x){toast('Could not read backup')}};r.readAsText(f)}
+function reset(){if(confirm('Reset StoryForge 1.0 project?')){localStorage.removeItem('storyforge_v12');location.reload()}}
+render();
+</script>
+</body>
+</html>

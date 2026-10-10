@@ -1,0 +1,517 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#171126">
+<title>Veylora 2.3</title>
+<style>
+:root {
+  --bg:#100d19; --panel:#1d172b; --panel2:#2a203b;
+  --line:#49375f; --pink:#f2b8d5; --purple:#b9a2ff;
+  --text:#fbf7ff; --muted:#c0b4d1;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top,#302044,var(--bg) 65%);color:var(--text);font:15px/1.5 Arial,sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.app{max-width:1150px;margin:auto;padding:16px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:45px;height:45px;display:grid;place-items:center;border-radius:15px;background:linear-gradient(135deg,var(--pink),var(--purple));color:#21152b;font-size:26px;font-weight:bold}
+h1,h2,h3,p{margin-top:0}
+h1{font-size:24px;margin-bottom:0}
+.brand p{font-size:12px;color:var(--muted);margin:0}
+.layout{display:grid;grid-template-columns:190px minmax(0,1fr);gap:16px}
+nav,.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px}
+nav{padding:9px;height:max-content;position:sticky;top:8px}
+nav button{display:block;width:100%;padding:12px;border:0;border-radius:10px;background:transparent;color:var(--muted);text-align:left;margin:3px 0}
+nav button.active,nav button:hover{background:var(--panel2);color:white}
+main{min-width:0}
+.panel{padding:20px;margin-bottom:15px}
+.hero{padding:25px;border:1px solid #614878;border-radius:18px;background:linear-gradient(120deg,#3b254b,#21192f);margin-bottom:15px}
+.hero h2{font-size:clamp(25px,4vw,36px);margin-bottom:8px}
+.hero p,.sub{color:var(--muted)}
+.btn{padding:10px 13px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);color:white}
+.btn.primary{background:linear-gradient(100deg,var(--pink),var(--purple));color:#21152b;border:0;font-weight:bold}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:15px}
+.stat,.story{padding:15px;border:1px solid var(--line);border-radius:14px;background:var(--panel2);min-width:0}
+.stat strong{display:block;font-size:25px;color:var(--pink)}
+.stat span,.small{font-size:12px;color:var(--muted)}
+label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}
+.field{margin-bottom:13px}
+input,select,textarea{width:100%;padding:11px;border-radius:9px;border:1px solid var(--line);background:#100d19;color:white}
+textarea{min-height:260px;line-height:1.8;resize:vertical}
+.hidden{display:none!important}
+.empty{padding:25px;border:1px dashed var(--line);border-radius:13px;color:var(--muted);text-align:center;grid-column:1/-1}
+.character-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(230px,.8fr);gap:15px}
+.stage{min-height:385px;display:grid;place-items:center;overflow:hidden;border-radius:15px;border:1px solid var(--line);background:linear-gradient(#73558a,#38294f 60%,#20172d 60%)}
+#avatar{width:min(95%,300px);height:370px}
+.controls{padding:14px;background:var(--panel2);border:1px solid var(--line);border-radius:14px}
+.swatches{display:flex;gap:9px;flex-wrap:wrap}
+.swatch{width:29px;height:29px;border-radius:50%;border:2px solid #ffffff55;padding:0}
+.swatch.selected{outline:2px solid var(--pink);outline-offset:2px}
+.notice{padding:12px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;color:var(--muted);font-size:12px;margin-top:13px}
+.toast{display:none;position:fixed;bottom:15px;left:50%;transform:translateX(-50%);padding:10px 16px;border-radius:20px;background:#f2b8d5;color:#21152b;font-weight:bold;z-index:5}
+footer{text-align:center;padding:14px;color:#9284a4;font-size:11px}
+@media(max-width:720px){
+ .app{padding:10px}.layout{grid-template-columns:1fr}
+ nav{position:static;display:flex;overflow-x:auto;gap:4px}
+ nav button{width:auto;white-space:nowrap;padding:9px}
+ .grid,.character-layout{grid-template-columns:1fr}
+ .panel{padding:14px}.hero{padding:19px}
+ .stage{min-height:340px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+ <div class="brand">
+  <div class="logo">V</div>
+  <div><h1>Veylora</h1><p>Create worlds. Tell stories.</p></div>
+ </div>
+ <button class="btn" id="backupTop">Export backup</button>
+</header>
+
+<div class="layout">
+<nav>
+ <button class="active" data-page="home">✦ Home</button>
+ <button data-page="library">▤ My Stories</button>
+ <button data-page="writing">✎ Writing Studio</button>
+ <button data-page="characters">♙ Character Studio</button>
+ <button data-page="scenes">▧ Scene Studio</button>
+ <button data-page="settings">⚙ Backup</button>
+</nav>
+
+<main>
+<section id="home" class="page">
+ <div class="hero">
+  <p>YOUR CREATIVE UNIVERSE</p>
+  <h2>Every great world starts with an idea.</h2>
+  <p>Write stories, create characters, and build worlds from your imagination.</p>
+  <div class="btnrow">
+   <button class="btn primary" id="startStory">＋ Start a story</button>
+   <button class="btn" data-open="characters">Create a character</button>
+  </div>
+ </div>
+ <div class="stats">
+  <div class="stat"><strong id="storyCount">0</strong><span>Saved stories</span></div>
+  <div class="stat"><strong id="charCount">0</strong><span>Saved characters</span></div>
+  <div class="stat"><strong>2.3</strong><span>Foundation version</span></div>
+ </div>
+ <div class="panel"><h2>Recent stories</h2><div id="recent" class="grid"></div></div>
+ <p class="notice">Your work is saved in this browser on this device. Export backups regularly.</p>
+</section>
+
+<section id="library" class="page hidden">
+ <div class="panel">
+  <h2>My Stories</h2><p class="sub">Keep your ideas and chapters together.</p>
+  <div class="btnrow">
+   <button class="btn primary" id="newStory">＋ New story</button>
+   <button class="btn" id="importButton">Import backup</button>
+   <input id="importFile" type="file" accept=".json,application/json" class="hidden">
+  </div>
+ </div>
+ <div id="stories" class="grid"></div>
+</section>
+
+<section id="writing" class="page hidden">
+ <div class="panel">
+  <h2>Writing Studio</h2><p class="sub">Your story deserves room to grow.</p>
+  <div class="field"><label>STORY TITLE</label><input id="title" placeholder="The Moonlit Kingdom"></div>
+  <div class="grid">
+   <div class="field"><label>GENRE</label>
+    <select id="genre">
+     <option>Fantasy</option><option>Adventure</option><option>Romance</option>
+     <option>Mystery</option><option>Drama</option><option>Science fiction</option>
+     <option>Fan fiction</option><option>Other</option>
+    </select>
+   </div>
+   <div class="field"><label>STATUS</label>
+    <select id="status"><option>Draft</option><option>In progress</option><option>Complete</option></select>
+   </div>
+  </div>
+  <div class="field"><label>CHAPTER TITLE</label><input id="chapter" placeholder="Chapter One"></div>
+  <div class="field"><label>YOUR STORY</label><textarea id="body" placeholder="Once upon a time..."></textarea></div>
+  <p class="small" id="wordCount">0 words</p>
+  <div class="btnrow">
+   <button class="btn primary" id="saveStoryButton">Save story</button>
+   <button class="btn" id="backLibrary">My stories</button>
+   <button class="btn" id="deleteStory">Delete</button>
+  </div>
+  <p class="small" id="saveStatus">Unsaved draft</p>
+ </div>
+</section>
+
+<section id="characters" class="page hidden">
+ <div class="panel">
+  <h2>Character Studio</h2>
+  <p class="sub">Change the options and watch your character preview update.</p>
+  <div class="character-layout">
+   <div>
+    <div class="stage">
+     <svg id="avatar" viewBox="0 0 300 390" role="img" aria-label="Customisable character">
+      <defs>
+       <linearGradient id="skinGradient" x1="0" y1="0" x2="1" y2="1">
+        <stop id="skinLight" offset="0%" stop-color="#a66b4c"/>
+        <stop id="skinDark" offset="100%" stop-color="#75412d"/>
+       </linearGradient>
+       <linearGradient id="clothGradient" x1="0" y1="0" x2="1" y2="1">
+        <stop id="clothLight" offset="0%" stop-color="#b9a2ff"/>
+        <stop id="clothDark" offset="100%" stop-color="#7960ba"/>
+       </linearGradient>
+      </defs>
+      <ellipse cx="150" cy="366" rx="70" ry="12" fill="#090710" opacity=".4"/>
+      <!-- legs -->
+      <path d="M120 250 Q112 295 115 340 L140 340 Q145 292 148 255Z" fill="url(#skinGradient)"/>
+      <path d="M153 255 Q157 300 164 340 L188 340 Q186 294 177 250Z" fill="url(#skinGradient)"/>
+      <path d="M113 337 L140 337 Q149 355 140 360 L109 360 Q105 350 113 337Z" fill="#171321"/>
+      <path d="M163 337 L188 337 Q197 350 193 360 L163 360 Q156 352 163 337Z" fill="#171321"/>
+      <!-- hair behind head -->
+      <path id="hairBack" d="M105 88 Q86 49 110 24 Q138 0 164 17 Q202 19 198 65 L187 112 L176 66 L121 66 L116 110Z" fill="#211323"/>
+      <!-- arms -->
+      <path d="M111 157 Q91 184 91 218 Q91 232 101 228 L129 174Z" fill="url(#skinGradient)" stroke="#68402f"/>
+      <path d="M189 157 Q209 184 209 218 Q209 232 199 228 L171 174Z" fill="url(#skinGradient)" stroke="#68402f"/>
+      <!-- neck and face -->
+      <path d="M134 112 L134 141 Q150 153 166 141 L166 112Z" fill="url(#skinGradient)"/>
+      <ellipse cx="112" cy="78" rx="10" ry="15" fill="url(#skinGradient)"/>
+      <ellipse cx="188" cy="78" rx="10" ry="15" fill="url(#skinGradient)"/>
+      <path d="M112 54 Q114 25 150 25 Q186 25 188 54 L183 91 Q178 119 150 126 Q122 119 117 91Z" fill="url(#skinGradient)"/>
+      <!-- eyes and nose -->
+      <path d="M125 76 Q135 69 144 76 M156 76 Q165 69 175 76" fill="none" stroke="#261522" stroke-width="3" stroke-linecap="round"/>
+      <ellipse cx="136" cy="78" rx="3" ry="4" fill="#211323"/>
+      <ellipse id="rightEye" cx="165" cy="78" rx="3" ry="4" fill="#211323"/>
+      <path d="M150 81 L146 94 Q150 97 154 94" fill="none" stroke="#704632" stroke-width="2"/>
+      <path id="mouth" d="M139 105 Q150 114 161 105" fill="none" stroke="#783f50" stroke-width="3" stroke-linecap="round"/>
+      <!-- front hair -->
+      <path id="hairFront" d="M108 65 Q104 22 141 19 Q178 15 191 49 L183 65 Q171 47 154 46 Q133 44 119 66Z" fill="#211323"/>
+      <!-- clothes -->
+      <path id="shirt" d="M128 137 Q150 150 172 137 L190 154 L205 230 Q178 249 150 249 Q122 249 95 230 L110 154Z" fill="url(#clothGradient)" stroke="#4c355e" stroke-width="2"/>
+      <path d="M110 154 L95 230 Q103 237 111 230 L128 170Z" fill="url(#clothGradient)"/>
+      <path d="M190 154 L205 230 Q197 237 189 230 L172 170Z" fill="url(#clothGradient)"/>
+      <path d="M134 145 Q150 158 166 145" fill="none" stroke="#ffffff88" stroke-width="2"/>
+      <path id="bottom" d="M112 229 Q150 240 188 229 L196 278 Q150 293 104 278Z" fill="#352444" stroke="#4c355e" stroke-width="2"/>
+      <path d="M108 231 Q150 241 192 231" fill="none" stroke="#f2b8d5" stroke-width="4"/>
+     </svg>
+    </div>
+    <p class="small">Early layered 2D artwork. More detailed faces, fingers, poses and animation are future upgrades.</p>
+   </div>
+   <div class="controls">
+    <div class="field"><label>CHARACTER NAME</label><input id="charName" value="Nova" maxlength="35"></div>
+    <div class="field"><label>HAIRSTYLE</label>
+     <select id="hairStyle">
+      <option value="curly">4C / coily curls</option><option value="afro">Rounded afro</option>
+      <option value="long">Long hair</option><option value="bob">Bob cut</option>
+      <option value="braids">Long braids</option><option value="bun">High puff</option>
+     </select>
+    </div>
+    <div class="field"><label>OUTFIT</label>
+     <select id="outfitStyle">
+      <option value="dress">Top and skirt</option><option value="hoodie">Hoodie and trousers</option>
+      <option value="shirt">Casual shirt and trousers</option><option value="gown">Long gown</option>
+     </select>
+    </div>
+    <div class="field"><label>EXPRESSION</label>
+     <select id="expression"><option value="smile">Smile</option><option value="neutral">Neutral</option><option value="surprised">Surprised</option><option value="wink">Wink</option></select>
+    </div>
+    <div class="field"><label>SKIN TONE</label><div class="swatches" id="skinSwatches">
+     <button class="swatch selected" style="background:#8d5439" data-skin="#8d5439" aria-label="Deep brown"></button>
+     <button class="swatch" style="background:#bd805c" data-skin="#bd805c" aria-label="Medium brown"></button>
+     <button class="swatch" style="background:#e1b08a" data-skin="#e1b08a" aria-label="Light brown"></button>
+     <button class="swatch" style="background:#f0c9a9" data-skin="#f0c9a9" aria-label="Light skin"></button>
+    </div></div>
+    <div class="field"><label>HAIR COLOUR</label><div class="swatches" id="hairSwatches">
+     <button class="swatch selected" style="background:#211323" data-hair="#211323"></button>
+     <button class="swatch" style="background:#542d23" data-hair="#542d23"></button>
+     <button class="swatch" style="background:#7d315e" data-hair="#7d315e"></button>
+     <button class="swatch" style="background:#c79a47" data-hair="#c79a47"></button>
+    </div></div>
+    <div class="field"><label>OUTFIT COLOUR</label><div class="swatches" id="clothSwatches">
+     <button class="swatch selected" style="background:#a88be8" data-cloth="#a88be8"></button>
+     <button class="swatch" style="background:#f2b8d5" data-cloth="#f2b8d5"></button>
+     <button class="swatch" style="background:#24202d" data-cloth="#24202d"></button>
+     <button class="swatch" style="background:#608b82" data-cloth="#608b82"></button>
+     <button class="swatch" style="background:#bd5c73" data-cloth="#bd5c73"></button>
+    </div></div>
+    <div class="btnrow"><button class="btn primary" id="saveCharacter">Save character</button><button class="btn" id="resetCharacter">Reset</button></div>
+   </div>
+  </div>
+  <div class="panel" style="margin-top:15px"><h3>Saved characters</h3><div id="savedCharacters" class="grid"></div></div>
+ </div>
+</section>
+
+<section id="scenes" class="page hidden">
+ <div class="panel">
+  <h2>Scene Studio</h2><p class="sub">Choose a setting for your story.</p>
+  <div class="field"><label>SCENE NAME</label><input id="sceneName" value="Moonlight Bedroom"></div>
+  <div class="field"><label>BACKGROUND</label>
+   <select id="sceneType">
+    <option value="bedroom">Dreamy bedroom</option><option value="forest">Enchanted forest</option>
+    <option value="city">City at night</option><option value="beach">Sunset beach</option>
+    <option value="school">School classroom</option>
+   </select>
+  </div>
+  <div id="scenePreview" class="stage" style="min-height:220px;margin-bottom:14px">
+   <div style="text-align:center"><div id="sceneEmoji" style="font-size:48px">🌙</div><h3 id="scenePreviewName">Moonlight Bedroom</h3><p id="sceneCaption" class="small">A cosy room beneath the moonlight.</p></div>
+  </div>
+  <button class="btn primary" id="saveScene">Save scene</button>
+  <h3 style="margin-top:22px">Saved scenes</h3><div id="savedScenes" class="grid"></div>
+ </div>
+</section>
+
+<section id="settings" class="page hidden">
+ <div class="panel">
+  <h2>Backup and Settings</h2>
+  <p class="sub">Protect your stories and creative work.</p>
+  <button class="btn primary" id="backupSettings">Export JSON backup</button>
+  <button class="btn" id="restoreSettings">Import JSON backup</button>
+  <p class="notice">This foundation does not yet have accounts, cloud sync, AI image generation, public publishing, subscription payments, or MP4 export. Those require separate development and testing.</p>
+ </div>
+</section>
+</main>
+</div>
+<footer>VEYLORA · YOUR IDEAS DESERVE A WORLD</footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY='veylora_23';
+const data={stories:[],characters:[],scenes:[]};
+let activeStory=null;
+let character={name:'Nova',hairStyle:'curly',outfitStyle:'dress',expression:'smile',skin:'#8d5439',hair:'#211323',cloth:'#a88be8'};
+const $=id=>document.getElementById(id);
+
+function notify(message){
+ const t=$('toast');t.textContent=message;t.style.display='block';
+ clearTimeout(notify.timer);notify.timer=setTimeout(()=>t.style.display='none',2200);
+}
+function persist(){
+ try{localStorage.setItem(KEY,JSON.stringify(data));return true}
+ catch(e){notify('Save failed. Please export a backup.');return false}
+}
+function restoreLocal(){
+ try{
+  const saved=JSON.parse(localStorage.getItem(KEY)||'{}');
+  for(const k of ['stories','characters','scenes'])
+   if(Array.isArray(saved[k]))data[k]=saved[k];
+ }catch(e){console.warn('Could not read local data',e)}
+}
+function go(page){
+ document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
+ $(page).classList.remove('hidden');
+ document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+ if(page==='home')renderHome();
+ if(page==='library')renderStories();
+ if(page==='characters')renderCharacters();
+ if(page==='scenes')renderScenes();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.page));
+document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>go(b.dataset.open));
+
+function blankStory(){
+ activeStory='story_'+Date.now();
+ $('title').value='Untitled Story';$('genre').value='Fantasy';
+ $('status').value='Draft';$('chapter').value='Chapter One';$('body').value='';
+ updateWords();$('saveStatus').textContent='New draft — not saved yet';go('writing');
+}
+function saveStory(){
+ const id=activeStory||'story_'+Date.now();
+ let s=data.stories.find(x=>x.id===id);
+ if(!s){s={id,created:Date.now()};data.stories.unshift(s)}
+ s.title=$('title').value.trim()||'Untitled Story';
+ s.genre=$('genre').value;s.status=$('status').value;
+ s.chapter=$('chapter').value.trim()||'Chapter One';
+ s.body=$('body').value;s.updated=Date.now();activeStory=id;
+ if(persist()){ $('saveStatus').textContent='Saved on this device';renderHome();renderStories();notify('Story saved ✨');}
+}
+function openStory(id){
+ const s=data.stories.find(x=>x.id===id);if(!s)return;
+ activeStory=id;$('title').value=s.title;$('genre').value=s.genre;
+ $('status').value=s.status;$('chapter').value=s.chapter;$('body').value=s.body;
+ updateWords();$('saveStatus').textContent='Saved story opened';go('writing');
+}
+function deleteStory(){
+ if(!activeStory){notify('Save this story first.');return}
+ const s=data.stories.find(x=>x.id===activeStory);
+ if(!s){blankStory();return}
+ if(!confirm('Delete "'+s.title+'" from this device?'))return;
+ data.stories=data.stories.filter(x=>x.id!==activeStory);activeStory=null;
+ persist();blankStory();renderHome();notify('Story deleted');
+}
+function updateWords(){
+ const words=$('body').value.trim();
+ $('wordCount').textContent=(words?words.split(/\s+/).length:0)+' words';
+}
+function storyCard(s){
+ const card=document.createElement('article');card.className='story';
+ const h=document.createElement('h3');h.textContent=s.title||'Untitled Story';
+ const meta=document.createElement('p');meta.className='small';meta.textContent=(s.genre||'Story')+' · '+(s.status||'Draft');
+ const preview=document.createElement('p');preview.textContent=(s.body||'No writing yet.').slice(0,120);
+ const open=document.createElement('button');open.className='btn primary';open.textContent='Open';open.onclick=()=>openStory(s.id);
+ const copy=document.createElement('button');copy.className='btn';copy.textContent='Duplicate';
+ copy.onclick=()=>{data.stories.unshift({...s,id:'story_'+Date.now(),title:s.title+' (copy)',created:Date.now()});persist();renderStories();renderHome();notify('Story duplicated')};
+ const row=document.createElement('div');row.className='btnrow';row.append(open,copy);
+ card.append(h,meta,preview,row);return card;
+}
+function renderStories(){
+ const box=$('stories');box.replaceChildren();
+ if(!data.stories.length){box.innerHTML='<div class="empty">Your first story is waiting to be written ✨</div>';return}
+ data.stories.forEach(s=>box.append(storyCard(s)));
+}
+function renderHome(){
+ $('storyCount').textContent=data.stories.length;
+ $('charCount').textContent=data.characters.length;
+ const box=$('recent');box.replaceChildren();
+ if(!data.stories.length){box.innerHTML='<div class="empty">Start a story and it will appear here.</div>';return}
+ data.stories.slice(0,4).forEach(s=>box.append(storyCard(s)));
+}
+$('startStory').onclick=blankStory;$('newStory').onclick=blankStory;
+$('saveStoryButton').onclick=saveStory;$('deleteStory').onclick=deleteStory;
+$('backLibrary').onclick=()=>go('library');$('body').oninput=updateWords;
+$('title').oninput=()=>$('saveStatus').textContent='Unsaved changes';
+
+function exportBackup(){
+ const blob=new Blob([JSON.stringify({app:'Veylora',version:'2.3',...data},null,2)],{type:'application/json'});
+ const url=URL.createObjectURL(blob);const a=document.createElement('a');
+ a.href=url;a.download='veylora-backup.json';a.click();URL.revokeObjectURL(url);
+ notify('Backup exported');
+}
+function importBackup(file){
+ if(!file)return;
+ const reader=new FileReader();
+ reader.onload=()=>{
+  try{
+   const d=JSON.parse(reader.result);
+   if(!Array.isArray(d.stories)||!Array.isArray(d.characters)||!Array.isArray(d.scenes))throw Error();
+   if(!confirm('Import this backup and replace current Veylora data?'))return;
+   data.stories=d.stories;data.characters=d.characters;data.scenes=d.scenes;
+   persist();renderHome();renderStories();renderCharacters();renderScenes();notify('Backup imported');
+  }catch(e){alert('This file is not a valid Veylora backup.')}
+ };
+ reader.readAsText(file);
+}
+$('backupTop').onclick=exportBackup;$('backupSettings').onclick=exportBackup;
+$('importButton').onclick=()=>$('importFile').click();
+$('restoreSettings').onclick=()=>$('importFile').click();
+$('importFile').onchange=e=>importBackup(e.target.files[0]);
+
+function hexToRgb(hex){return [1,3,5].map(i=>parseInt(hex.slice(i,i+2),16))}
+function shade(hex,amount){
+ return '#'+hexToRgb(hex).map(v=>Math.max(0,Math.min(255,v+amount)).toString(16).padStart(2,'0')).join('');
+}
+function stops(prefix,color){
+ $(prefix+'Light').setAttribute('stop-color',shade(color,20));
+ $(prefix+'Dark').setAttribute('stop-color',shade(color,-25));
+}
+const hairShapes={
+ curly:['M105 88 Q86 49 110 24 Q138 0 164 17 Q202 19 198 65 L187 112 L176 66 L121 66 L116 110Z','M108 65 Q104 22 141 19 Q178 15 191 49 L183 65 Q171 47 154 46 Q133 44 119 66Z'],
+ afro:['M104 91 Q83 70 94 46 Q86 22 112 19 Q122 0 143 12 Q162 0 180 16 Q207 17 204 45 Q218 67 192 91 L180 111 L175 67 L120 67 L116 109Z','M104 66 Q91 31 119 21 Q142 8 155 27 Q177 13 193 47 L183 66 Q167 43 151 47 Q130 43 119 68Z'],
+ long:['M108 72 Q94 36 122 20 Q158 3 183 29 Q202 49 193 112 L184 177 L169 177 L175 70 L122 70 L127 177 L111 174 L106 112Z','M108 63 Q105 26 141 20 Q174 15 190 48 L183 64 Q166 42 151 45 Q130 42 119 65Z'],
+ bob:['M108 72 Q97 32 126 20 Q159 5 183 30 Q201 50 192 90 L183 126 L169 127 L174 69 L122 69 L127 127 L113 125Z','M108 63 Q105 26 141 20 Q174 15 190 48 L183 64 Q166 42 151 45 Q130 42 119 65Z'],
+ braids:['M108 72 Q96 33 126 20 Q159 5 183 30 Q201 50 192 80 L204 169 L190 181 L177 69 L122 69 L112 177 L98 168 L108 80Z','M108 63 Q105 26 141 20 Q174 15 190 48 L183 64 Q166 42 151 45 Q130 42 119 65Z'],
+ bun:['M108 72 Q94 37 122 20 Q156 3 183 29 Q202 48 192 89 L183 113 L175 69 L122 69 L117 111Z M132 23 Q120 0 141 0 Q165 0 164 21Z','M108 63 Q105 26 141 20 Q174 15 190 48 L183 64 Q166 42 151 45 Q130 42 119 65Z']
+};
+function updateCharacter(){
+ const c=character;
+ stops('skin',c.skin);stops('cloth',c.cloth);
+ $('hairBack').setAttribute('d',hairShapes[c.hairStyle][0]);
+ $('hairFront').setAttribute('d',hairShapes[c.hairStyle][1]);
+ $('hairBack').setAttribute('fill',c.hair);$('hairFront').setAttribute('fill',c.hair);
+ $('rightEye').setAttribute('ry',c.expression==='wink'?'1':'4');
+ const mouths={smile:'M139 105 Q150 114 161 105',neutral:'M140 108 L160 108',surprised:'M145 104 Q150 116 155 104',wink:'M139 105 Q150 114 161 105'};
+ $('mouth').setAttribute('d',mouths[c.expression]);
+ const shirt=$('shirt'),bottom=$('bottom');
+ shirt.setAttribute('fill','url(#clothGradient)');
+ if(c.outfitStyle==='gown'){
+  shirt.setAttribute('d','M128 137 Q150 150 172 137 L190 154 L204 235 L225 329 Q150 348 75 329 L96 235 L110 154Z');
+  bottom.setAttribute('d','M75 329 Q150 350 225 329 L229 344 Q150 366 71 344Z');
+  bottom.setAttribute('fill','url(#clothGradient)');
+ }else if(c.outfitStyle==='hoodie'){
+  shirt.setAttribute('d','M126 137 Q150 150 174 137 L194 154 L207 235 Q150 254 93 235 L106 154Z');
+  bottom.setAttribute('d','M109 231 L191 231 L187 280 L113 280Z');bottom.setAttribute('fill','#282335');
+ }else if(c.outfitStyle==='shirt'){
+  shirt.setAttribute('d','M132 138 L150 153 L168 138 L190 154 L204 232 L96 232 L110 154Z');
+  bottom.setAttribute('d','M109 231 L191 231 L187 280 L113 280Z');bottom.setAttribute('fill','#30293a');
+ }else{
+  shirt.setAttribute('d','M128 137 Q150 150 172 137 L190 154 L205 230 Q178 249 150 249 Q122 249 95 230 L110 154Z');
+  bottom.setAttribute('d','M112 229 Q150 240 188 229 L196 278 Q150 293 104 278Z');bottom.setAttribute('fill','#352444');
+ }
+ $('charName').value=c.name;
+ $('hairStyle').value=c.hairStyle;$('outfitStyle').value=c.outfitStyle;$('expression').value=c.expression;
+ document.querySelectorAll('[data-skin]').forEach(b=>b.classList.toggle('selected',b.dataset.skin===c.skin));
+ document.querySelectorAll('[data-hair]').forEach(b=>b.classList.toggle('selected',b.dataset.hair===c.hair));
+ document.querySelectorAll('[data-cloth]').forEach(b=>b.classList.toggle('selected',b.dataset.cloth===c.cloth));
+}
+$('charName').oninput=e=>character.name=e.target.value;
+$('hairStyle').onchange=e=>{character.hairStyle=e.target.value;updateCharacter()};
+$('outfitStyle').onchange=e=>{character.outfitStyle=e.target.value;updateCharacter()};
+$('expression').onchange=e=>{character.expression=e.target.value;updateCharacter()};
+document.querySelectorAll('[data-skin]').forEach(b=>b.onclick=()=>{character.skin=b.dataset.skin;updateCharacter()});
+document.querySelectorAll('[data-hair]').forEach(b=>b.onclick=()=>{character.hair=b.dataset.hair;updateCharacter()});
+document.querySelectorAll('[data-cloth]').forEach(b=>b.onclick=()=>{character.cloth=b.dataset.cloth;updateCharacter()});
+$('saveCharacter').onclick=()=>{
+ data.characters.unshift({...character,id:'char_'+Date.now()});
+ persist();renderCharacters();renderHome();notify('Character saved ✨');
+};
+$('resetCharacter').onclick=()=>{
+ character={name:'Nova',hairStyle:'curly',outfitStyle:'dress',expression:'smile',skin:'#8d5439',hair:'#211323',cloth:'#a88be8'};
+ updateCharacter();notify('Preview reset');
+};
+function renderCharacters(){
+ const box=$('savedCharacters');box.replaceChildren();
+ if(!data.characters.length){box.innerHTML='<div class="empty">Save your first character to see it here.</div>';return}
+ data.characters.forEach(c=>{
+  const card=document.createElement('div');card.className='story';
+  const h=document.createElement('h3');h.textContent=c.name||'Unnamed character';
+  const p=document.createElement('p');p.className='small';p.textContent=c.hairStyle+' hair · '+c.outfitStyle+' · '+c.expression;
+  const row=document.createElement('div');row.className='btnrow';
+  const edit=document.createElement('button');edit.className='btn primary';edit.textContent='Edit';
+  edit.onclick=()=>{character={...c};updateCharacter();notify('Character loaded')};
+  const del=document.createElement('button');del.className='btn';del.textContent='Delete';
+  del.onclick=()=>{data.characters=data.characters.filter(x=>x.id!==c.id);persist();renderCharacters();renderHome()};
+  row.append(edit,del);card.append(h,p,row);box.append(card);
+ });
+}
+
+const sceneInfo={
+ bedroom:{emoji:'🌙',caption:'A cosy room beneath the moonlight.',bg:'linear-gradient(#73558a,#38294f 58%,#6a456b 58%,#251a32)'},
+ forest:{emoji:'🌲',caption:'A mysterious path beneath glowing trees.',bg:'linear-gradient(#183d43,#315b4b 58%,#192c2a 58%,#10191c)'},
+ city:{emoji:'🌃',caption:'City lights sparkle beneath the midnight sky.',bg:'linear-gradient(#12182f,#424878 58%,#25233e 58%,#171321)'},
+ beach:{emoji:'🌅',caption:'Sunset colours meet the quiet sea.',bg:'linear-gradient(#ef9a9a,#a96d9f 47%,#557e9c 48%,#1d435c)'},
+ school:{emoji:'🏫',caption:'A classroom ready for a new day.',bg:'linear-gradient(#b7c8d6,#d9c7b5 58%,#7b655d 58%,#4c3a3a)'}
+};
+function updateScene(){
+ const v=sceneInfo[$('sceneType').value];
+ $('scenePreview').style.background=v.bg;$('sceneEmoji').textContent=v.emoji;
+ $('sceneCaption').textContent=v.caption;$('scenePreviewName').textContent=$('sceneName').value||'Untitled Scene';
+}
+$('sceneType').onchange=updateScene;$('sceneName').oninput=updateScene;
+$('saveScene').onclick=()=>{
+ const type=$('sceneType').value;
+ data.scenes.unshift({id:'scene_'+Date.now(),name:$('sceneName').value.trim()||'Untitled Scene',type});
+ persist();renderScenes();notify('Scene saved');
+};
+function renderScenes(){
+ const box=$('savedScenes');box.replaceChildren();
+ if(!data.scenes.length){box.innerHTML='<div class="empty">Your saved scenes will appear here.</div>';return}
+ data.scenes.forEach(s=>{
+   const card=document.createElement('div');card.className='story';
+  const h=document.createElement('h3');h.textContent=s.name;
+  const p=document.createElement('p');p.className='small';p.textContent=s.type;
+  const row=document.createElement('div');row.className='btnrow';
+  const view=document.createElement('button');view.className='btn';view.textContent='Preview';
+  view.onclick=()=>{$('sceneName').value=s.name;$('sceneType').value=s.type;updateScene()};
+  const del=document.createElement('button');del.className='btn';del.textContent='Delete';
+  del.onclick=()=>{data.scenes=data.scenes.filter(x=>x.id!==s.id);persist();renderScenes()};
+  row.append(view,del);card.append(h,p,row);box.append(card);
+ });
+}
+restoreLocal();renderHome();renderStories();renderCharacters();renderScenes();updateCharacter();updateScene();
+</script>
+</body>
+</html>
